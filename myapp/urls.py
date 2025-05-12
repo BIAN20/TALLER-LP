@@ -10,4 +10,22 @@ urlpatterns = [
 
  # API para operaciones AJAX
     path('api/lineas-por-grupo/<uuid:grupo_id>/', views.get_lineas_por_grupo,name='get_lineas_por_grupo'),
+
+
+# URLs para el Carrito de Compras
+    path('carrito/', views.cart_detail, name='cart_detail'),
+    path('carrito/agregar/<uuid:articulo_id>/', views.cart_add,
+    name='cart_add'),
+    path('carrito/eliminar/<uuid:articulo_id>/', views.cart_remove,
+    name='cart_remove'),
+    path('carrito/vaciar/', views.cart_clear, name='cart_clear'),
+    path('checkout/', views.checkout, name='checkout'),
+    path('orden/<uuid:pedido_id>/', views.order_detail, name='order_detail'),
+    path('ordenes/<uuid:pedido_id>/cancelar/', views.cancelar_orden, name='cancelar_orden'),
+    #path('orden/pdf/<uuid:pedido_id>/', views.generate_pdf_order,name='generate_pdf_order'),
+    path('articulos/catalogo/', views.articulos_catalogo,
+    name='articulos_catalogo'),
+
+
+
 ]

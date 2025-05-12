@@ -31,25 +31,107 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'myapp',
+    'accounts',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'myapp',
-    'accounts',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google', 
+    'allauth.socialaccount.providers.facebook', 
+
+
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
+   'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.sites.middleware.CurrentSiteMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
+
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Duración de la sesión (2 semanas, en segundos) 
+SESSION_COOKIE_AGE = 1209600
+
+# Cerrar la sesión cuando el usuario cierra el navegador 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+# Usar cookies seguros (solo transmitir por HTTPS) 
+SESSION_COOKIE_SECURE = False  # Cambiar a True en producción con HTTPS
+
+# Motor de almacenamiento de sesiones 
+SESSION_ENGINE = 'django.contrib.sessions.backends.db' # Almacenar en la base de datos
+
+
+AUTHENTICATION_BACKENDS = [
+ # Needed to login by username in Django admin
+ 'django.contrib.auth.backends.ModelBackend',
+ # `allauth` specific authentication methods
+ 'allauth.account.auth_backends.AuthenticationBackend',
+]
+SITE_ID = 1
+
+# Auth settings 
+AUTH_USER_MODEL = 'accounts.Usuario'  # Asegúrate de que está correctamente configurado 
+
+LOGIN_REDIRECT_URL = 'home' 
+
+LOGOUT_REDIRECT_URL = 'login' 
+
+# Allauth settings 
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username' 
+
+ACCOUNT_LOGIN_METHODS = {'username', 'email'}  # O {'username'}, según cómo quieres permitir logins
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
+
+
+ACCOUNT_EMAIL_VERIFICATION = 'optional' 
+
+
+
+# Social providers settings
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': 'tu-client-id-de-google',
+            'secret': 'tu-secret-de-google',
+            'key': '',      
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    },
+    'facebook': {
+        'APP': {
+            'client_id': 'tu-client-id-de-facebook',
+            'secret': 'tu-secret-de-facebook',
+            'key': ''
+        },
+        'METHOD': 'oauth2',
+        'SCOPE': ['email', 'public_profile'],
+        'VERIFIED_EMAIL': True,
+    }
+}
+
 
 ROOT_URLCONF = 'my_project2.urls'
 
@@ -129,8 +211,3 @@ STATIC_ROOT = BASE_DIR/'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR/'media'
 
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
