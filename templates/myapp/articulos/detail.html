@@ -223,30 +223,33 @@ vendrían del backend -->
   <div class="col-md-8">
     
   </div>
+
+
+
   {% if recent_products %}
-  <div class="card shadow mt-4">
-  <div class="card-header bg-white">
-  <h5 class="mb-0">Vistos recientemente</h5>
+    <div class="card shadow mt-4">
+    <div class="card-header bg-white">
+    <h5 class="mb-0">Vistos recientemente</h5>
+    </div>
+    <div class="card-body">
+    <div class="row">
+    {% for product in recent_products %}
+    <div class="col-md-3 mb-2">
+    <div class="card">
+    <div class="card-body p-2">
+    <h6 class="card-title small">{{
+    product.descripcion|truncatechars:25 }}</h6>
+    <p class="card-text text-primary mb-1">${{
+    product.listaprecio.precio_1 }}</p>
   </div>
-  <div class="card-body">
-  <div class="row">
-  {% for product in recent_products %}
-  <div class="col-md-3 mb-2">
-  <div class="card">
-  <div class="card-body p-2">
-  <h6 class="card-title small">{{
-  product.descripcion|truncatechars:25 }}</h6>
-  <p class="card-text text-primary mb-1">${{
-  product.listaprecio.precio_1 }}</p>
-</div>
-<a href="{% url 'articulo_detail'
-product.articulo_id %}" class="btn btn-sm btn-outline-primary">Ver</a>
- </div>
- </div>
- </div>
- {% endfor %}
- </div>
- </div>
- </div>
+  <a href="{% url 'articulo_detail'
+  product.articulo_id %}" class="btn btn-sm btn-outline-primary">Ver</a>
+  </div>
+  </div>
+  </div>
+  {% endfor %}
+  </div>
+  </div>
+  </div>
  {% endif %}
 {% endblock %}

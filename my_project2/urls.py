@@ -18,8 +18,12 @@ urlpatterns = [
     path('myapp/', include('myapp.urls')),
 
     # URLs para allauth
-     path('accounts/', include('allauth.urls')), 
-]
+    path('accounts/', include('allauth.urls')), 
+
+    # URL de la API
+    path('api/', include('api.urls')),
+
+    ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL,

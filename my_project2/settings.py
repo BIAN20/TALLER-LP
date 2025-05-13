@@ -33,6 +33,11 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'myapp',
     'accounts',
+    'rest_framework',
+    'rest_framework.authtoken', # im
+    'rest_framework_simplejwt',
+    'api',
+    'django_filters',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -47,7 +52,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google', 
     'allauth.socialaccount.providers.facebook', 
 
-
+  
 ]
 
 MIDDLEWARE = [
@@ -96,43 +101,13 @@ LOGOUT_REDIRECT_URL = 'login'
 # Allauth settings 
 ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username' 
 
-ACCOUNT_LOGIN_METHODS = {'username', 'email'}  # O {'username'}, según cómo quieres permitir logins
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
+ACCOUNT_EMAIL_REQUIRED = True  
 
+ACCOUNT_USERNAME_REQUIRED = True  
+
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'  
 
 ACCOUNT_EMAIL_VERIFICATION = 'optional' 
-
-
-
-# Social providers settings
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'APP': {
-            'client_id': 'tu-client-id-de-google',
-            'secret': 'tu-secret-de-google',
-            'key': '',      
-        },
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        }
-    },
-    'facebook': {
-        'APP': {
-            'client_id': 'tu-client-id-de-facebook',
-            'secret': 'tu-secret-de-facebook',
-            'key': ''
-        },
-        'METHOD': 'oauth2',
-        'SCOPE': ['email', 'public_profile'],
-        'VERIFIED_EMAIL': True,
-    }
-}
-
-
 ROOT_URLCONF = 'my_project2.urls'
 
 TEMPLATES = [
@@ -211,3 +186,81 @@ STATIC_ROOT = BASE_DIR/'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR/'media'
 
+
+
+# Social providers settings
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': 'tu-client-id-de-google',
+            'secret': 'tu-secret-de-google',
+            'key': '',      
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    },
+    'facebook': {
+        'APP': {
+            'client_id': 'tu-client-id-de-facebook',
+            'secret': 'tu-secret-de-facebook',
+            'key': ''
+        },
+        'METHOD': 'oauth2',
+        'SCOPE': ['email', 'public_profile'],
+        'VERIFIED_EMAIL': True,
+    }
+}
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS':
+    'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '10/minute',
+        'user': '100/minute',
+        'burst': '5/minute',
+        'sustained': '50/day'
+    },
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.URLPathVersioning',
+    'DEFAULT_VERSION': 'v1',
+    'ALLOWED_VERSIONS': ['v1', 'v2'],
+    'VERSION_PARAM': 'version'
+}
+# Configuración JWT
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'USER_ID_FIELD': 'username',
+    'USER_ID_CLAIM': 'user_id',
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+}
